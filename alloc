@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/*---------------------------------------------------------
+   1. STATIC VARIABLE EXAMPLE
+----------------------------------------------------------*/
+void incrementStaticCounter() {
+    static int counter = 0;  // STATIC → stored in DATA segment
+                             // Retains value between calls
+    counter++;
+    printf("Static counter value = %d  (addr: %p)\n", counter, (void *)&counter);
+}
+
+/*---------------------------------------------------------
+   2. STACK VARIABLE EXAMPLE
+----------------------------------------------------------*/
+void incrementStackCounter() {
+    int counter = 0;   // STACK VARIABLE → recreated every call
+                       // Always starts at 0
+    counter++;
+    printf("Stack counter value = %d  (addr: %p)\n", counter, (void *)&counter);
+}
+
+/*---------------------------------------------------------
+   3. HEAP VARIABLE EXAMPLE
+----------------------------------------------------------*/
+void incrementHeapValue(int *ptr) {
+    (*ptr)++;   // Increase the value stored in heap
+    printf("Heap value = %d  (addr: %p)\n", *ptr, (void *)ptr);
+}
+
+/*---------------------------------------------------------
+   MAIN PROGRAM
+----------------------------------------------------------*/
+int main(void) {
+
+    /*---------------- STATIC ----------------*/
+    printf("===== STATIC VARIABLE DEMO =====\n");
+
+    printf("Calling incrementStaticCounter() first time...\n");
+    incrementStaticCounter();
+
+    printf("\nCalling incrementStaticCounter() second time...\n");
+    incrementStaticCounter();
+
+    printf("\nCalling incrementStaticCounter() third time...\n");
+    incrementStaticCounter();
+
+
+    /*---------------- STACK ----------------*/
+    printf("\n\n===== STACK VARIABLE DEMO =====\n");
+
+    printf("Calling incrementStackCounter() first time...\n");
+    incrementStackCounter();
+
+    printf("\nCalling incrementStackCounter() second time...\n");
+    incrementStackCounter();
+
+    printf("\nCalling incrementStackCounter() third time...\n");
+    incrementStackCounter();
+
+
+    /*---------------- HEAP ----------------*/
+    printf("\n\n===== HEAP VARIABLE DEMO =====\n");
+
+    int *heapVar = (int *)malloc(sizeof(int));  // Allocate heap memory
+    if (heapVar == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    *heapVar = 0;  // Initialize
+
+    printf("Calling incrementHeapValue() first time...\n");
+    incrementHeapValue(heapVar);
+
+    printf("\nCalling incrementHeapValue() second time...\n");
+    incrementHeapValue(heapVar);
+
+    printf("\nCalling incrementHeapValue() third time...\n");
+    incrementHeapValue(heapVar);
+
+    free(heapVar);
+    printf("\nMemory freed. Program finished.\n");
+
+    return 0;
+}
